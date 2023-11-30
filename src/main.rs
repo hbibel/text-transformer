@@ -1,17 +1,12 @@
 use std::fmt::Debug;
 
-use text_transformer;
+use text_transformer::program_source;
+use text_transformer::program_source::ProgramSource;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum InputFile {
     InStream,
     Files(Vec<String>),
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub enum ProgramSource {
-    Literal(String),
-    File(String),
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -35,8 +30,14 @@ fn main() {
         }
     };
 
-    println!("{}", text_transformer::msg());
-    println!("{:?}", config);
+    let code = match program_source::code(config.program) {
+        Result::Ok(code) => code,
+        Result::Err(e) => {
+            eprintln!("{}", e);
+            std::process::exit(1);
+        }
+    };
+    println!("{:?}", code);
 }
 
 pub fn parse_args(args: impl Iterator<Item = String>) -> Result<Config, String> {
