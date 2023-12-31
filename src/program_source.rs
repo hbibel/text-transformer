@@ -15,10 +15,6 @@ impl Display for ProgramSource {
     }
 }
 
-pub fn msg() -> String {
-    "Hello, world!".to_string()
-}
-
 pub fn code(source: ProgramSource) -> Result<String, String> {
     match source {
         ProgramSource::Literal(s) => Ok(s),
