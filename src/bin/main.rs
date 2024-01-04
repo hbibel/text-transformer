@@ -2,6 +2,7 @@ use std::fmt::Debug;
 use std::fs;
 use std::io;
 use std::io::BufRead;
+use std::io::Write;
 
 use text_transformer::program;
 use text_transformer::program_source;
@@ -13,10 +14,16 @@ pub enum InputFile {
     Files(Vec<String>),
 }
 
-#[derive(Debug, PartialEq, Eq)]
+pub enum Verbosity {
+    Normal,
+    Verbose,
+    Spam,
+}
+
 pub struct Config {
     input_files: InputFile,
     program: ProgramSource,
+    verbosity: Verbosity,
 }
 
 fn main() {
@@ -34,12 +41,19 @@ fn main() {
         }
     };
 
-    // env_logger::Builder::from().format(&mut self, format).init();
+    env_logger::Builder::new()
+        .format(|buf, record| writeln!(buf, "{}", record.args()))
+        .filter_level(match config.verbosity {
+            Verbosity::Normal => log::LevelFilter::Info,
+            Verbosity::Verbose => log::LevelFilter::Debug,
+            Verbosity::Spam => log::LevelFilter::Trace,
+        })
+        .init();
 
     let code = match program_source::code(config.program) {
         Result::Ok(code) => code,
         Result::Err(e) => {
-            eprintln!("{}", e);
+            log::error!("{}", e);
             std::process::exit(1);
         }
     };
@@ -83,10 +97,12 @@ fn create_input_stream(inf: InputFile) -> Result<Items, io::Error> {
 
 fn parse_args(args: impl Iterator<Item = String>) -> Result<Config, String> {
     // TODO When adding more flags, consider using clap
+    // TODO add -v, -vv, -vvv for verbosity
 
     let mut config = Config {
         input_files: InputFile::InStream,
         program: ProgramSource::Literal(String::new()),
+        verbosity: Verbosity::Spam,
     };
 
     // Assuming the first argument is the program name; this seems to be just

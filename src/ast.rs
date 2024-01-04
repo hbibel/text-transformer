@@ -32,8 +32,7 @@ pub fn parse(tokens: Vec<Token>) -> Result<AST, String> {
 
     while !token_slice.is_empty() {
         let (ex, remainder) = parse_expr(token_slice)?;
-        // TODO use logging
-        println!("parsed expr {:?}", ex);
+        log::trace!("parsed statement {:?}", ex);
         token_slice = remainder;
         expressions.push(ex);
 
