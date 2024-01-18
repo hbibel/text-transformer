@@ -3,6 +3,8 @@ pub enum Token {
     Alphanum(String),
     OpenParen,
     CloseParen,
+    OpenBracket,
+    CloseBracket,
     Underscore,
     Semicolon,
 }
@@ -25,6 +27,8 @@ pub fn scan(source_code: String) -> Result<Vec<Token>, String> {
             }
             (State::Init, '(') => tokens.push(Token::OpenParen),
             (State::Init, ')') => tokens.push(Token::CloseParen),
+            (State::Init, '[') => tokens.push(Token::OpenBracket),
+            (State::Init, ']') => tokens.push(Token::CloseBracket),
             (State::Init, ';') => tokens.push(Token::Semicolon),
             (State::Init, '_') => tokens.push(Token::Underscore),
             (State::Init, _) => return Result::Err(format!("Invalid character '{}'", ch)),
@@ -39,6 +43,8 @@ pub fn scan(source_code: String) -> Result<Vec<Token>, String> {
                     ws if ws.is_whitespace() => {}
                     '(' => tokens.push(Token::OpenParen),
                     ')' => tokens.push(Token::CloseParen),
+                    '[' => tokens.push(Token::OpenBracket),
+                    ']' => tokens.push(Token::CloseBracket),
                     ';' => tokens.push(Token::Semicolon),
                     unexpected => {
                         return Result::Err(format!("Invalid character '{}'", unexpected))
@@ -62,11 +68,14 @@ mod tests {
 
     #[test]
     fn test_one_statement() {
-        let source_code = String::from("print(_);");
+        let source_code = String::from("print(_[2]);");
         let expected = vec![
             Token::Alphanum(String::from("print")),
             Token::OpenParen,
             Token::Underscore,
+            Token::OpenBracket,
+            Token::Alphanum(String::from("2")),
+            Token::CloseBracket,
             Token::CloseParen,
             Token::Semicolon,
         ];

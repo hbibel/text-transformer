@@ -59,7 +59,9 @@ fn main() {
     };
     let p = program::compile(code).expect("program could not be compiled.");
     let mut items = create_input_stream(config.input_files).unwrap();
-    items.try_for_each(|input| p.run(&input)).unwrap();
+    items
+        .try_for_each(|input| p.run(&input).map(|out| println!("{}", out)))
+        .unwrap();
 }
 
 struct Items {

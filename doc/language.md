@@ -26,13 +26,17 @@ can be defined by adding more dimension separators, e.g. `-`.
 TODO remove value expressions as top level statements
 
 ```
-program := expr [ ';' expr ]* [ ';' ]
+program := statement [ ';' statement ]* [ ';' ]
 
-expr :=
-    | function-call
-    | value
+statement := function-call
 
 function-call := function-name '(' [ expr [ ',' expr ]* ]? ')'
+
+expr := arr-expr ( '[' number ']' )
+
+arr-expr :=
+    | function-call
+    | value
 
 value :=
     | '_'
