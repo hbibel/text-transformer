@@ -57,11 +57,17 @@ fn main() {
             std::process::exit(1);
         }
     };
-    let p = program::compile(code).expect("program could not be compiled.");
+    let p = program::compile(code).unwrap_or_else(|e| {
+        log::error!("{}", e);
+        std::process::exit(1);
+    });
     let mut items = create_input_stream(config.input_files).unwrap();
     items
         .try_for_each(|input| p.run(&input).map(|out| println!("{}", out)))
-        .unwrap();
+        .unwrap_or_else(|err| {
+            log::error!("{}", err);
+            std::process::exit(1);
+        });
 }
 
 struct Items {
