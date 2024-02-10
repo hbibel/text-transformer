@@ -30,7 +30,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     permissions:
-      content: write
+      contents: write
 
     steps:
     - uses: actions/checkout@v4
