@@ -29,13 +29,10 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
-    permissions:
-      contents: write
-
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install ARM toolchain
+    - name: Install toolchain for target architecture
       run: rustup target add ${{ matrix.target }}
 
     # TODO checkout WezTerm repo for how to cache dependencies
@@ -50,6 +47,29 @@ jobs:
     - name: Run tests
       run: cargo test --verbose
 
+    - uses: actions/upload-artifact@v4
+      with:
+        name: tt-${{ github.ref_name }}-${{ matrix.target }}
+        path: |
+          target/${{ matrix.target }}/release/main
+        if-no-files-found: error
+        retention-days: 1
+        overwrite: true
+
+  publish:
+
+    needs: build
+
+    permissions:
+      contents: write
+
+    steps:
+
+    - uses: actions/download-artifact@v4
+
+    - name: Delete release of same name
+      run: gh release delete ${{ github.ref_name }} --yes || true
+
     - name: Create release
       env:
         GH_TOKEN: ${{ github.token }}
@@ -58,4 +78,5 @@ jobs:
         ${{ github.ref_name }}
         --title "${{ github.ref_name }} (alpha)"
         --prerelease
-        target/${{ matrix.target }}/release/main
+        target/x86_64-unknown-linux-musl/release/main
+        target/aarch64-apple-darwin/release/main
