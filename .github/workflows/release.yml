@@ -55,5 +55,4 @@ jobs:
         ${{ github.ref_name }}
         --title "${{ github.ref_name }} (alpha)"
         --prerelease
-        target/x86_64-unknown-linux-musl/release/main
-        target/aarch64-apple-darwin/release/main
+        target/${{ matrix.target }}/release/main
