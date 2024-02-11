@@ -96,7 +96,7 @@ jobs:
         IS_RC: ${{ contains(github.ref_name, 'rc') }}
       run: |
         echo 'is RC: '
-        echo ${{ env.IS_RC && 'true' || 'false' }}
+        echo ${{ env.IS_RC == 'true' && 'true' || 'false' }}
 
     - name: Create release
       env:
@@ -107,6 +107,6 @@ jobs:
         ${{ github.ref_name }}
         --title "${{ github.ref_name }} (alpha)"
         --notes-file doc/release_notes/${{ github.ref_name }}.md
-        ${{ env.IS_RC && '--prerelease' || '' }}
+        ${{ env.IS_RC == 'true' && '--prerelease' || '' }}
         ${{ github.ref_name }}-x86_64-unknown-linux-musl/tt-${{ github.ref_name }}-x86_64-unknown-linux-musl.tar.gz
         ${{ github.ref_name }}-aarch64-apple-darwin/tt-${{ github.ref_name }}-aarch64-apple-darwin.tar.gz
