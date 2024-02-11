@@ -96,4 +96,4 @@ jobs:
         ${{ github.ref_name }}
         --title "${{ github.ref_name }} (alpha)"
         --prerelease
-        tt-*.tar.gz
+        "**/tt-*.tar.gz"
