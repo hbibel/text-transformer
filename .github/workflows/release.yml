@@ -47,7 +47,7 @@ jobs:
     - name: Run tests
       run: cargo test --verbose
 
-    - name: Zip
+    - name: Create tarball
       run: |
         mv \
           target/${{ matrix.target }}/release/main \
@@ -91,10 +91,12 @@ jobs:
     - name: Create release
       env:
         GH_TOKEN: ${{ github.token }}
+        IS_RC: ${{ contains(github.ref_name, 'rc') }}
       run: >
         gh release create
         ${{ github.ref_name }}
         --title "${{ github.ref_name }} (alpha)"
-        --prerelease
+        --notes-file ${{ github.ref_name }}.md
+        ${{ env.IS_RC && '--prerelease' || '' }}
         ${{ github.ref_name }}-x86_64-unknown-linux-musl/tt-${{ github.ref_name }}-x86_64-unknown-linux-musl.tar.gz
         ${{ github.ref_name }}-aarch64-apple-darwin/tt-${{ github.ref_name }}-aarch64-apple-darwin.tar.gz
