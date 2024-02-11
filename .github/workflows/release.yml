@@ -91,6 +91,13 @@ jobs:
         GH_TOKEN: ${{ github.token }}
       run: gh release delete ${{ github.ref_name }} --yes || true
 
+    - name: testing
+      env:
+        IS_RC: ${{ contains(github.ref_name, 'rc') }}
+      run:
+        echo 'is RC: '
+        echo ${{ env.IS_RC && 'true' || 'false' }}
+
     - name: Create release
       env:
         GH_TOKEN: ${{ github.token }}
