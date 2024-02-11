@@ -94,7 +94,7 @@ jobs:
       run: >
         gh release create
         ${{ github.ref_name }}
-        --title "${{ github.ref_name }} (alpha)"
+        --title "${{ github.ref_name }}"
         --notes-file doc/release_notes/${{ github.ref_name }}.md
         ${{ github.ref_name }}-x86_64-unknown-linux-musl/tt-${{ github.ref_name }}-x86_64-unknown-linux-musl.tar.gz
         ${{ github.ref_name }}-aarch64-apple-darwin/tt-${{ github.ref_name }}-aarch64-apple-darwin.tar.gz
