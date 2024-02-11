@@ -94,7 +94,7 @@ jobs:
     - name: testing
       env:
         IS_RC: ${{ contains(github.ref_name, 'rc') }}
-      run:
+      run: |
         echo 'is RC: '
         echo ${{ env.IS_RC && 'true' || 'false' }}
 
