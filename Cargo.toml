@@ -5,6 +5,13 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[profile.release]
+# Explicitly opting out of stripping debug symbols, since I want debug info to
+# be available in case of a crash.
+# If a smaller binary is desired, `strip = true` will significantly reduce the
+# final size.
+strip = "none"
+
 [dependencies]
 env_logger = "0.10.1"
 log = "0.4.20"
