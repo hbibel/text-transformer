@@ -1,10 +1,6 @@
 // TODO temporarily disabling warnings
 #![allow(dead_code)]
 
-pub use super::expression::Expression;
-pub use super::function_call::FunctionCall;
-pub use super::value::Value;
-
 pub struct Ast {
     pub root: Program,
 }
@@ -21,8 +17,14 @@ pub enum Statement {
     Fd(FunctionDefinition),
 }
 
+#[derive(PartialEq, Eq, Debug)]
+pub struct FunctionCall {
+    function_name: String,
+    args: Vec<Expression>,
+}
+
 pub struct Assignment {
-    item_name: String,
+    assignee: String,
     expression: Expression,
 }
 
@@ -30,4 +32,19 @@ pub struct FunctionDefinition {
     function_name: String,
     arguments: Vec<String>,
     body: Vec<Statement>,
+}
+
+#[derive(PartialEq, Eq, Debug)]
+pub enum Expression {
+    Fc(FunctionCall),
+    Val(Value),
+    IndexedExpression(Box<Expression>, usize),
+}
+
+#[derive(PartialEq, Eq, Debug)]
+pub enum Value {
+    Item,
+    Identifier(String),
+    LiteralString(String),
+    LiteralInteger(i64),
 }

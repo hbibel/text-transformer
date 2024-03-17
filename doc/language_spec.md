@@ -2,18 +2,22 @@
 program
     : [ prologue ] statement [ ';' statement ]* [ ';' ] [ epilogue ]
 
-prologue : 'prologue' '{' statement [ ';' statement ]* [ ';' ] '}'
+prologue
+    : 'prologue' '{' statement [ ';' statement ]* [ ';' ] '}'
 
-epilogue : 'epilogue' '{' statement [ ';' statement ]* [ ';' ] '}'
+epilogue
+    : 'epilogue' '{' statement [ ';' statement ]* [ ';' ] '}'
 
 statement
     : function-call
     | assignment
-    | funcion-definition
+    | function-definition
 
-function-call : identifier '(' [ expr [ ',' expr ]* ]? ')'
+function-call
+    : identifier '(' [ expr [ ',' expr ]* ]? ')'
 
-assignment : identifier '=' expr
+assignment
+    : identifier '=' expr
 
 function-definition
     : fn identifier '(' identifier [ ',' identifier ]* ')'
@@ -31,17 +35,22 @@ value
     | string
     | integer
 
-identifier : alpha-char [ alpha-char | digit | '_' ]*
+identifier
+    : alpha-char [ alpha-char | digit | '_' ]*
 
-string : '"' char* '"'
+string
+    : '"' char* '"'
 
-integer : digit*
+integer
+    : digit*
 
-digit : 0 .. 9
+digit
+    : 0 .. 9
 
 alpha-char
     : a .. z
     | A .. Z
 
-char : any UTF-8 char
+char
+    : any UTF-8 char
 ```

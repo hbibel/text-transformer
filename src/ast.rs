@@ -1,3 +1,6 @@
+// TODO allow
+#![allow(dead_code)]
+
 use crate::tokens::Token;
 
 #[derive(Debug, PartialEq)]
@@ -127,7 +130,7 @@ fn parse_array_index(tokens: &[Token]) -> Result<(i32, &[Token]), String> {
             .parse::<i32>()
             .map_err(|err| err.to_string())
             .map(|r| (r, &tokens[1..])),
-        Some(other) => Err(format!("Unexpected token")),
+        Some(other) => Err(format!("Unexpected token {other:?}")),
         None => Err("Missing index".to_string()),
     }?;
     let tokens = expect_token(Token::CloseBracket, tokens)?;

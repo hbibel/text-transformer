@@ -1,16 +1,9 @@
 // TODO allow
 #![allow(dead_code)]
+
 use crate::tokens::Token;
 
-use super::identifier;
-
-#[derive(PartialEq, Eq, Debug)]
-pub enum Value {
-    Item,
-    Identifier(String),
-    LiteralString(String),
-    LiteralInteger(i64),
-}
+use super::{identifier, model::Value};
 
 pub fn parse(tokens: &[Token]) -> Option<(Value, &[Token])> {
     parse_item(tokens)
