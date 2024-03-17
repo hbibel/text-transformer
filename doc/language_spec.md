@@ -20,7 +20,7 @@ assignment
     : identifier '=' expr
 
 function-definition
-    : fn identifier '(' identifier [ ',' identifier ]* ')'
+    : 'fn' identifier '(' identifier [ ',' identifier ]* ')'
         '{' statement [ ';' statement ]* '}'
 
 # implementation note: This rule is left-recursing

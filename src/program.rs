@@ -8,8 +8,8 @@ use crate::tokens;
 // I need to implement function calls instead of unwinding the operations,
 // since as of right now recursion will lead to OOM on compilation.
 
-pub fn compile(source_code: String) -> Result<Program, CompileError> {
-    let tokens = tokens::scan(source_code).map_err(|e| CompileError { msg: e })?;
+pub fn compile(source_code: &str) -> Result<Program, CompileError> {
+    let tokens = tokens::scan(&source_code).map_err(|e| CompileError { msg: e })?;
     let ast = ast::parse(tokens).map_err(|e| CompileError { msg: e })?;
     Program::from_ast(&ast)
 }

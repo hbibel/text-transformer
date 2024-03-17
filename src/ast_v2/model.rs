@@ -19,8 +19,8 @@ pub enum Statement {
 
 #[derive(PartialEq, Eq, Debug)]
 pub struct FunctionCall {
-    function_name: String,
-    args: Vec<Expression>,
+    pub function_name: String,
+    pub args: Vec<Expression>,
 }
 
 pub struct Assignment {

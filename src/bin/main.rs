@@ -57,7 +57,7 @@ fn main() {
             std::process::exit(1);
         }
     };
-    let p = program::compile(code).unwrap_or_else(|e| {
+    let p = program::compile(&code).unwrap_or_else(|e| {
         log::error!("{}", e);
         std::process::exit(1);
     });

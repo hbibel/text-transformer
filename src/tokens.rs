@@ -7,6 +7,22 @@ pub enum Token {
     CloseBracket,
     Underscore,
     Semicolon,
+    Comma,
+}
+
+impl std::fmt::Display for Token {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Alphanum(s) => f.write_str(s),
+            Token::OpenParen => f.write_str("("),
+            Token::CloseParen => f.write_str(")"),
+            Token::OpenBracket => f.write_str("["),
+            Token::CloseBracket => f.write_str("]"),
+            Token::Underscore => f.write_str("_"),
+            Token::Semicolon => f.write_str(";"),
+            Token::Comma => f.write_str(","),
+        }
+    }
 }
 
 enum State {
@@ -14,7 +30,7 @@ enum State {
     InAlphanum,
 }
 
-pub fn scan(source_code: String) -> Result<Vec<Token>, String> {
+pub fn scan(source_code: &str) -> Result<Vec<Token>, String> {
     let mut tokens = Vec::new();
     let mut charbuffer = vec![];
     let mut state = State::Init;
@@ -31,7 +47,8 @@ pub fn scan(source_code: String) -> Result<Vec<Token>, String> {
             (State::Init, ']') => tokens.push(Token::CloseBracket),
             (State::Init, ';') => tokens.push(Token::Semicolon),
             (State::Init, '_') => tokens.push(Token::Underscore),
-            (State::Init, _) => return Result::Err(format!("Invalid character '{}'", ch)),
+            (State::Init, ',') => tokens.push(Token::Comma),
+            (State::Init, _) => return Result::Err(format!("Invalid character '{ch}'")),
             (State::InAlphanum, _) if ch.is_alphanumeric() || ch == '_' => {
                 charbuffer.push(ch);
             }
@@ -46,9 +63,7 @@ pub fn scan(source_code: String) -> Result<Vec<Token>, String> {
                     '[' => tokens.push(Token::OpenBracket),
                     ']' => tokens.push(Token::CloseBracket),
                     ';' => tokens.push(Token::Semicolon),
-                    unexpected => {
-                        return Result::Err(format!("Invalid character '{}'", unexpected))
-                    }
+                    unexpected => return Result::Err(format!("Invalid character '{unexpected}'")),
                 }
 
                 state = State::Init;
@@ -79,7 +94,7 @@ mod tests {
             Token::CloseParen,
             Token::Semicolon,
         ];
-        let actual = scan(source_code).unwrap();
+        let actual = scan(&source_code).unwrap();
         assert_eq!(actual, expected);
     }
 
@@ -93,7 +108,7 @@ mod tests {
             Token::CloseParen,
             Token::Semicolon,
         ];
-        let actual = scan(source_code).unwrap();
+        let actual = scan(&source_code).unwrap();
         assert_eq!(actual, expected);
     }
 
@@ -101,7 +116,7 @@ mod tests {
     fn test_underscore_identifier() {
         let source_code = String::from("foo_bar");
         let expected = vec![Token::Alphanum(String::from("foo_bar"))];
-        let actual = scan(source_code).unwrap();
+        let actual = scan(&source_code).unwrap();
         assert_eq!(actual, expected);
     }
 }
