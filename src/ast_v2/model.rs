@@ -1,16 +1,19 @@
 // TODO temporarily disabling warnings
 #![allow(dead_code)]
 
+#[derive(PartialEq, Eq, Debug)]
 pub struct Ast {
     pub root: Program,
 }
 
+#[derive(PartialEq, Eq, Debug)]
 pub struct Program {
-    statements: Vec<Statement>,
-    prologue: Vec<Statement>,
-    epilogue: Vec<Statement>,
+    pub statements: Vec<Statement>,
+    pub prologue: Vec<Statement>,
+    pub epilogue: Vec<Statement>,
 }
 
+#[derive(PartialEq, Eq, Debug)]
 pub enum Statement {
     Fc(FunctionCall),
     As(Assignment),
@@ -23,15 +26,17 @@ pub struct FunctionCall {
     pub args: Vec<Expression>,
 }
 
+#[derive(PartialEq, Eq, Debug)]
 pub struct Assignment {
-    assignee: String,
-    expression: Expression,
+    pub assignee: String,
+    pub expression: Expression,
 }
 
+#[derive(PartialEq, Eq, Debug)]
 pub struct FunctionDefinition {
-    function_name: String,
-    arguments: Vec<String>,
-    body: Vec<Statement>,
+    pub function_name: String,
+    pub arguments: Vec<String>,
+    pub body: Vec<Statement>,
 }
 
 #[derive(PartialEq, Eq, Debug)]

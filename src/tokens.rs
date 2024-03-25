@@ -5,9 +5,12 @@ pub enum Token {
     CloseParen,
     OpenBracket,
     CloseBracket,
+    OpenBrace,
+    CloseBrace,
     Underscore,
     Semicolon,
     Comma,
+    EqualSign,
 }
 
 impl std::fmt::Display for Token {
@@ -18,9 +21,12 @@ impl std::fmt::Display for Token {
             Token::CloseParen => f.write_str(")"),
             Token::OpenBracket => f.write_str("["),
             Token::CloseBracket => f.write_str("]"),
+            Token::OpenBrace => f.write_str("{"),
+            Token::CloseBrace => f.write_str("}"),
             Token::Underscore => f.write_str("_"),
             Token::Semicolon => f.write_str(";"),
             Token::Comma => f.write_str(","),
+            Token::EqualSign => f.write_str("="),
         }
     }
 }
@@ -45,9 +51,12 @@ pub fn scan(source_code: &str) -> Result<Vec<Token>, String> {
             (State::Init, ')') => tokens.push(Token::CloseParen),
             (State::Init, '[') => tokens.push(Token::OpenBracket),
             (State::Init, ']') => tokens.push(Token::CloseBracket),
+            (State::Init, '{') => tokens.push(Token::OpenBrace),
+            (State::Init, '}') => tokens.push(Token::CloseBrace),
             (State::Init, ';') => tokens.push(Token::Semicolon),
             (State::Init, '_') => tokens.push(Token::Underscore),
             (State::Init, ',') => tokens.push(Token::Comma),
+            (State::Init, '=') => tokens.push(Token::EqualSign),
             (State::Init, _) => return Result::Err(format!("Invalid character '{ch}'")),
             (State::InAlphanum, _) if ch.is_alphanumeric() || ch == '_' => {
                 charbuffer.push(ch);
@@ -62,7 +71,11 @@ pub fn scan(source_code: &str) -> Result<Vec<Token>, String> {
                     ')' => tokens.push(Token::CloseParen),
                     '[' => tokens.push(Token::OpenBracket),
                     ']' => tokens.push(Token::CloseBracket),
+                    '{' => tokens.push(Token::OpenBrace),
+                    '}' => tokens.push(Token::CloseBrace),
                     ';' => tokens.push(Token::Semicolon),
+                    ',' => tokens.push(Token::Comma),
+                    '=' => tokens.push(Token::EqualSign),
                     unexpected => return Result::Err(format!("Invalid character '{unexpected}'")),
                 }
 

@@ -1,6 +1,9 @@
+mod assignment;
 mod expression;
 mod function_call;
+mod function_definition;
 mod identifier;
 mod model;
+mod statement;
 mod utils;
 mod value;
