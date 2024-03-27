@@ -4,6 +4,7 @@ mod function_call;
 mod function_definition;
 mod identifier;
 mod model;
+mod program;
 mod statement;
 mod utils;
 mod value;

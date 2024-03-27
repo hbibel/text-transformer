@@ -21,7 +21,16 @@ impl Statement {
         let mut tokens = parse_constant_token(tokens, &Token::OpenBrace)?;
 
         let mut statments = Vec::new();
+
+        // parse first statement
+        if let Some((stmt, ts)) = Self::parse(tokens) {
+            tokens = ts;
+            statments.push(stmt);
+        }
+
         while parse_constant_token(tokens, &Token::CloseBrace).is_none() {
+            // all further statements need to be separated by semicolons
+            tokens = parse_constant_token(tokens, &Token::Semicolon)?;
             let (stmt, ts) = Self::parse(tokens)?;
             tokens = ts;
             statments.push(stmt);
