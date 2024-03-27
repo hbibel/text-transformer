@@ -9,8 +9,8 @@ use crate::tokens;
 // since as of right now recursion will lead to OOM on compilation.
 
 pub fn compile(source_code: &str) -> Result<Program, CompileError> {
-    let tokens = tokens::scan(&source_code).map_err(|e| CompileError { msg: e })?;
-    let ast = ast::parse(tokens).map_err(|e| CompileError { msg: e })?;
+    let tokens = tokens::scan(source_code).map_err(|e| CompileError::ScanError { msg: e })?;
+    let ast = ast::parse(tokens).map_err(|e| CompileError::SyntaxError { msg: e })?;
     Program::from_ast(&ast)
 }
 
@@ -52,7 +52,7 @@ impl Program {
                             msg: "Empty stack".to_string(),
                         }),
                         Some(val) => {
-                            program_state.output.push_str(&format!("{}", val));
+                            program_state.output.push_str(&format!("{val}"));
                             Ok(program_state)
                         }
                     },
@@ -159,7 +159,7 @@ fn compile_expr(
             Ok(comp)
         }
         (None, _) => Ok(comp),
-        (Some(_), other_type) => Err(CompileError {
+        (Some(_), other_type) => Err(CompileError::SemanticAnalysisError {
             msg: format!("Expected {}, got {}", Type::List, other_type),
         }),
     }
@@ -180,9 +180,11 @@ fn compile_function_call(
         ops: function_ops,
         return_type,
         arg_types,
-    } = functions.get(function_name).ok_or(CompileError {
-        msg: format!("Function {} not found", function_name),
-    })?;
+    } = functions
+        .get(function_name)
+        .ok_or(CompileError::SemanticAnalysisError {
+            msg: format!("Function {} not found", function_name),
+        })?;
 
     let arg_computations: Vec<TypedComputation> = args
         .iter()
@@ -195,7 +197,7 @@ fn compile_function_call(
             arg_types.len(),
             arg_computations.len()
         );
-        return Err(CompileError { msg });
+        return Err(CompileError::SemanticAnalysisError { msg });
     }
     for (i, (arg_c, exp_type)) in arg_computations.iter().zip(arg_types).enumerate() {
         if arg_c.result_type != *exp_type {
@@ -203,7 +205,7 @@ fn compile_function_call(
                 "Argument {} to function {} is wrong: Expected {}, got {}",
                 i, function_name, exp_type, arg_c.result_type
             );
-            return Err(CompileError { msg });
+            return Err(CompileError::SemanticAnalysisError { msg });
         }
     }
 
@@ -232,13 +234,19 @@ impl Display for RuntimeError {
 }
 
 #[derive(Debug)]
-pub struct CompileError {
-    msg: String,
+pub enum CompileError {
+    ScanError { msg: String },
+    SyntaxError { msg: String },
+    SemanticAnalysisError { msg: String },
 }
 
 impl Display for CompileError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.msg)
+        match self {
+            CompileError::ScanError { msg } => write!(f, "{}", msg),
+            CompileError::SyntaxError { msg } => write!(f, "{}", msg),
+            CompileError::SemanticAnalysisError { msg } => write!(f, "{}", msg),
+        }
     }
 }
 
